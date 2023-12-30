@@ -55,7 +55,7 @@ app.get('/questions',(req,res)=> {
 app.get("/categories", (req,res) => {
 
     console.log("Called Categories")
-    const categories = ["Abnehmen","Muskeln aufbauen","Yoga","NochwasKeineAhnung"
+    const categories = [{id:1, nameGerman:"Abnehmen"},{id:2, nameGerman:"Muskeln aufbauen"},{id:3, nameGerman:"Yoga"},{id:4, nameGerman:"Irgendwas noch"}
 
 
     ]
