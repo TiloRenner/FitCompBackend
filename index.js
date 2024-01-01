@@ -10,9 +10,12 @@ app.use(cors())
 app.get('/questions',(req,res)=> {
 
     const questions_package = {
+        steps:2,
         questions: [
             {
                 questionTextGerman:"Wie oft treibst du in der Woche Sport",
+                questionType:"skill",
+                questionId:100,
                 answerType:"fixed",
                 answers: [
                     {
@@ -36,15 +39,22 @@ app.get('/questions',(req,res)=> {
             },
             {
                 questionTextGerman:"Wieviel Zeit kannst du pro Tag für das Training aufwenden?",
+                questionType:"skill",
+                questionID:101,
                 answerType:"slider",
                 answers: [
                     {
                         aTextGerman:"Minuten",
                         valueMin: 5,
-                        valueMax:  180 
+                        valueMax:  180,
+                        valueDefault:30
                     }
                 ]
             }
+        ],
+        results:[
+            {test:0}
+
         ]
     }
     
