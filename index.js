@@ -40,13 +40,13 @@ app.get('/questions',(req,res)=> {
             {
                 questionTextGerman:"Wieviel Zeit kannst du pro Tag für das Training aufwenden?",
                 questionType:"skill",
-                questionID:101,
+                questionId:101,
                 answerType:"slider",
                 answers: [
                     {
                         aTextGerman:"Minuten",
                         valueMin: 5,
-                        valueMax:  180,
+                        valueMax:  120,
                         valueDefault:30
                     }
                 ]
