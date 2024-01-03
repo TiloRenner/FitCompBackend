@@ -10,7 +10,7 @@ app.use(cors())
 app.get('/questions',(req,res)=> {
 
     const questions_package = {
-        steps:2,
+        steps:4,
         questions: [
             {
                 questionTextGerman:"Wie oft treibst du in der Woche Sport",
@@ -48,6 +48,34 @@ app.get('/questions',(req,res)=> {
                         valueMin: 5,
                         valueMax:  120,
                         valueDefault:30
+                    }
+                ]
+            },
+            {
+                questionTextGerman:"Wie viele Liegestütze schaffst du an einem Stück?",
+                questionType:"skill",
+                questionId:102,
+                answerType:"slider",
+                answers: [
+                    {
+                        aTextGerman:"Liegestütze",
+                        valueMin: 0,
+                        valueMax:  50,
+                        valueDefault:20
+                    }
+                ]
+            },
+            {
+                questionTextGerman:"Wie viele Kniebeuge schaffst du an einem Stück?",
+                questionType:"skill",
+                questionId:103,
+                answerType:"slider",
+                answers: [
+                    {
+                        aTextGerman:"Kniebeuge",
+                        valueMin: 0,
+                        valueMax:  80,
+                        valueDefault:35
                     }
                 ]
             }
