@@ -6,6 +6,8 @@ import cors from 'cors'
 const app = express();
 
 app.use(cors())
+app.use(express.json());
+app.use(express.urlencoded({extended:true}))
 
 app.get('/questions',(req,res)=> {
 
@@ -100,6 +102,60 @@ app.get("/categories", (req,res) => {
 
     res.status(200).json(categories)
 })
+
+app.post("/getadjustedproduct", (req,res) =>
+    {
+        console.log(req.body);
+
+
+            const baseproduct = 
+            {
+                category : 1,
+                exercises: [
+                    {
+                        name: "Liegestütze",
+                        questionId : 102,
+                        reps: 50 
+                    },
+                    {
+                        name: "Kniebeuge",
+                        questionId : 103,
+                        reps: 40
+
+                    }
+
+
+                ]
+            }
+
+            const adjustedExercises = baseproduct.exercises.map((exercise) =>
+                {
+                    const matchingAnswer = req.body.answers.find((answer) => answer.questionId == exercise.questionId
+
+                    )
+                    exercise.reps = Math.floor(matchingAnswer.valueEntered *1.2)
+                    return exercise;
+
+                }
+            )
+
+            
+
+            const adjustedProduct = 
+            {
+                category : 1
+            }
+            adjustedProduct.exercises = adjustedExercises;
+
+
+
+            res.status(200).json({
+              message: 'Soon with adjusted product',
+              adjustedProduct
+            });
+          
+    }
+)
 
 
 app.listen(8080, ()=> {
