@@ -7,7 +7,7 @@ const router = express.Router()
 
 
 router.post("/register", AuthenticationController.register)
-
+router.post("/login", AuthenticationController.login)
 
 
 
