@@ -3,6 +3,11 @@ import cors from 'cors'
 import AssessmentRouter from './router/assessmentRouter.js'
 
 
+import MongooseHelper from "./utils/mongooseHelper.js";
+
+MongooseHelper.connectDB()
+
+
 const app = express();
 
 app.use(cors())

@@ -1,9 +1,12 @@
 import express from 'express'
-import AuthenticationRouter from '../controller/authenticationController.js';
+import AuthenticationController from '../controller/authenticationController.js';
 
 
 const router = express.Router()
 
+
+
+router.post("/register", AuthenticationController.register)
 
 
 
