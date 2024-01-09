@@ -23,6 +23,11 @@ const MongooseHelper =
         }
 
 
+    },
+
+    findUser: async function(username)
+    {
+
     }
 
 

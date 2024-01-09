@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import AssessmentRouter from './router/assessmentRouter.js'
+import AuthenticationRouter from './router/authenticationRouter.js';
 
 
 import MongooseHelper from "./utils/mongooseHelper.js";
@@ -14,8 +15,9 @@ app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 
-
+app.use("/authentication", AuthenticationRouter);
 app.use("/assessment",AssessmentRouter);
+
 
 
 

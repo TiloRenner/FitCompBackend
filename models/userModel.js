@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
     username : String,
     hashedPassword: String,
+    role:String
 }
 );
 
