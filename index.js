@@ -31,7 +31,7 @@ const sessions ={};
 
 
 
-app.use(cors({origin: "http://localhost:5173", credentials:true}))
+app.use(cors({origin: process.env.cors_origin, credentials:true}))
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 
@@ -43,7 +43,7 @@ app.get("/cookie",(req,res)=>{
     console.log("Called Cookieget")
     const sessionId = uuidv4();
     //res.set('Set-Cookie', `session=${sessionId}`)
-    res.cookie('session',sessionId, {maxAge:oneDay,domain: 'localhost', sameSite:'none', secure: true })
+    res.cookie('session',sessionId, {maxAge:oneDay,domain: process.env.cookiedomain, sameSite:'none', secure: true })
     res.json({messsage : 'Success'})
 
 })
