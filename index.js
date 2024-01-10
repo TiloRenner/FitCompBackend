@@ -43,7 +43,7 @@ app.get("/cookie",(req,res)=>{
     console.log("Called Cookieget")
     const sessionId = uuidv4();
     //res.set('Set-Cookie', `session=${sessionId}`)
-    res.cookie('session',sessionId, {maxAge:oneDay,domain: process.env.cookiedomain, sameSite:'none', secure: true })
+    res.cookie('session',sessionId, {maxAge:oneDay,domain: process.env.cookiedomain, sameSite:'none', secure: true, partitioned: 'true' })
     res.json({messsage : 'Success'})
 
 })
