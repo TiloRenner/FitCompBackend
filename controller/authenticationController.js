@@ -48,7 +48,6 @@ const AuthenticationController = {
             {
                 console.log("Found user ", username, " Result: ", matchingUser, " Length: ",matchingUser.length)
                 res.status(409).json({userCreated: false, message:"User already exists"})
-                
             }
         }
         catch(err)

@@ -48,13 +48,13 @@ app.use(session({
     resave:false,
     saveUninitialized:true,
     store: store,
-    cookie : { 
+    /*cookie : { 
         maxAge:oneDay,
         httpOnly:true,
         secure:true, 
         sameSite:'none', 
         domain: process.env.cookiedomain
-    }
+    }*/
 }))
 app.use(cors({origin: true, methods:["POST", "GET","OPTIONS","HEAD"],credentials:true}))
 
