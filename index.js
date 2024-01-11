@@ -7,6 +7,8 @@ import AssessmentRouter from './router/assessmentRouter.js'
 import AuthenticationRouter from './router/authenticationRouter.js';
 import {v4 as uuidv4} from 'uuid';
 import 'dotenv/config';
+import session from 'express-session'
+import {default as connectMongoDBSession} from 'connect-mongodb-session'
 
 
 
@@ -16,7 +18,13 @@ const oneDay = 1000*60*60*24;
 
 
 
-MongooseHelper.connectDB()
+const db = MongooseHelper.connectDB()
+const MongoDBStore = connectMongoDBSession(session)
+const store = new MongoDBStore({
+    uri: process.env.DB_URI,
+    collection: 'userSessions'
+
+})
 
 
 const app = express();
@@ -34,6 +42,19 @@ const sessions ={};
 app.use(cors({origin: process.env.cors_origin, credentials:true}))
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
+app.use(session({
+    secret: process.env.Session_Secret,
+    resave:false,
+    saveUninitialized:false,
+    store: store,
+    cookie : { 
+        httpOnly:true,
+        secure:true, 
+        sameSite:'none', 
+        partitioned: true,
+        domain: process.env.cookiedomain
+    }
+}))
 
 app.use("/authentication", AuthenticationRouter);
 app.use("/assessment",AssessmentRouter);

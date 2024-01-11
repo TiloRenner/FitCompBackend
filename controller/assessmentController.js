@@ -87,7 +87,7 @@ const AssessmentController =
     },
 
     serveCategories : async function(req,res){
-        console.log("Called Categories")
+        console.log("Called Categories",req.session)
         const categories = [{id:1, nameGerman:"Abnehmen"},{id:2, nameGerman:"Muskeln aufbauen"},{id:3, nameGerman:"Yoga"},{id:4, nameGerman:"Irgendwas noch"}
     
     
