@@ -39,7 +39,7 @@ const sessions ={};
 
 
 
-app.use(cors({origin: process.env.cors_origin, credentials:true}))
+app.use(cors({origin: process.env.cors_origin, methods:["POST", "GET","OPTIONS","HEAD"],credentials:true}))
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 app.use(session({
