@@ -39,7 +39,7 @@ const sessions ={};
 
 
 
-
+app.set('trust proxy', 1) // trust first proxy
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 app.use(session({
@@ -91,9 +91,9 @@ if(process.env.devmode)
 
 }
 
-//const httpsServer = https.createServer(options,app);
+const httpsServer = https.createServer(options,app);
 
-//httpsServer.listen(8081,()=>{console.log('Listening on port 8081 over https')});
+httpsServer.listen(8081,()=>{console.log('Listening on port 8081 over https')});
 /*app.listen(8080, ()=> {
     console.log('Listening on port 8080')
 })*/
