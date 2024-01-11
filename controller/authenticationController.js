@@ -84,7 +84,10 @@ const AuthenticationController = {
                     req.session.isAuth = true;
                     req.session.userId = matchingUser._id;
                     console.log("Sending Cookie?" ,req.session)
-                    res.cookie('sessionPWTest',"MyOwnCookie" + matchingUser._id, {maxAge:oneDay,domain:cookiedomain , sameSite:'none', secure: true, partitioned: true })
+                    console.log("Sending CookieID" ,req.sessionID)
+
+                    //res.cookie('sessionPWTest',"MyOwnCookie" + matchingUser._id, {maxAge:oneDay,domain:cookiedomain , sameSite:'none', secure: true, partitioned: true })
+                    //res.cookie('fitcomp2.sid',req.session, {maxAge:oneDay,domain:cookiedomain , sameSite:'none', secure: true, partitioned: true })
                     res.status(200).json({message: "User logged in"})
                 }
                 else
