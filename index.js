@@ -39,19 +39,19 @@ const sessions ={};
 
 
 
-app.use(cors({origin: process.env.cors_origin, methods:["POST", "GET","OPTIONS","HEAD"],credentials:true}))
+app.use(cors({origin: true, methods:["POST", "GET","OPTIONS","HEAD"],credentials:true}))
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 app.use(session({
+    name:"fitcomp.sid",
     secret: process.env.Session_Secret,
     resave:false,
     saveUninitialized:true,
     store: store,
     cookie : { 
-        httpOnly:false,
+        httpOnly:true,
         secure:true, 
-        sameSite:'None', 
-        partitioned: true,
+        sameSite:'none', 
         domain: process.env.cookiedomain
     }
 }))
