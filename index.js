@@ -48,7 +48,7 @@ app.use(session({
     resave:false,
     saveUninitialized:true,
     store: store,
-    cookie: { sameSite:'none'}
+    cookie: { sameSite:'none', secure: true}
     /*cookie : { 
         maxAge:oneDay,
         httpOnly:true,
