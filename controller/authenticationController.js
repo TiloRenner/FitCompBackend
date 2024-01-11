@@ -1,19 +1,19 @@
 
 import MongooseHelper from "../utils/mongooseHelper.js";
 import User from "../models/userModel.js";
-
 import bcrypt from 'bcrypt';
-
+import 'dotenv/config';
 
 //MongooseHelper.connectDB()
+const cookiedomain = process.env.cookiedomain
+const oneDay = 1000*60*60*24;
 
 const AuthenticationController = {
 
+
     register: async function(req,res)
     {
-
         console.log("Called Register",req.session)
-
 
         const {username,password,email} = req.body
 
@@ -62,6 +62,7 @@ const AuthenticationController = {
         console.log("Called Login")
 
         const {username,password} = req.body
+
         console.log("Username: ", username, "pass: ", password)
 
         try{
@@ -83,6 +84,7 @@ const AuthenticationController = {
                     req.session.isAuth = true;
                     req.session.userId = matchingUser._id;
                     console.log("Sending Cookie?" ,req.session)
+                    res.cookie('sessionPWTest',"MyOwnCookie" + matchingUser._id, {maxAge:oneDay,domain:cookiedomain , sameSite:'none', secure: true, partitioned: true })
                     res.status(200).json({message: "User logged in"})
                 }
                 else
