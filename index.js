@@ -39,7 +39,7 @@ const sessions ={};
 
 
 
-app.use(cors({origin: true, methods:["POST", "GET","OPTIONS","HEAD"],credentials:true}))
+
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 app.use(session({
@@ -49,12 +49,14 @@ app.use(session({
     saveUninitialized:true,
     store: store,
     cookie : { 
+        maxAge:oneDay,
         httpOnly:true,
         secure:true, 
         sameSite:'none', 
         domain: process.env.cookiedomain
     }
 }))
+app.use(cors({origin: true, methods:["POST", "GET","OPTIONS","HEAD"],credentials:true}))
 
 app.use("/authentication", AuthenticationRouter);
 app.use("/assessment",AssessmentRouter);
@@ -64,6 +66,8 @@ app.get("/cookie",(req,res)=>{
     console.log("Called Cookieget")
     const sessionId = uuidv4();
     //res.set('Set-Cookie', `session=${sessionId}`)
+    console.log()
+    
     res.cookie('session',sessionId, {maxAge:oneDay,domain: process.env.cookiedomain, sameSite:'none', secure: true, partitioned: true })
     res.json({messsage : 'Success'})
 
@@ -86,9 +90,9 @@ if(process.env.devmode)
 
 }
 
-const httpsServer = https.createServer(options,app);
+//const httpsServer = https.createServer(options,app);
 
-httpsServer.listen(8081,()=>{console.log('Listening on port 8081 over https')});
+//httpsServer.listen(8081,()=>{console.log('Listening on port 8081 over https')});
 /*app.listen(8080, ()=> {
     console.log('Listening on port 8080')
 })*/
