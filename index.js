@@ -50,7 +50,7 @@ app.use(session({
     cookie : { 
         httpOnly:true,
         secure:true, 
-        sameSite:'none', 
+        sameSite:'None', 
         partitioned: true,
         domain: process.env.cookiedomain
     }
