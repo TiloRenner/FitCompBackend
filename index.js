@@ -9,6 +9,7 @@ import {v4 as uuidv4} from 'uuid';
 import 'dotenv/config';
 import session from 'express-session'
 import {default as connectMongoDBSession} from 'connect-mongodb-session'
+import IsAuth from './middleware/isAuth.js'
 
 
 
@@ -38,7 +39,7 @@ app.use(session({
     name:"fitcomp.sid",
     secret: process.env.Session_Secret,
     resave:false,
-    saveUninitialized:true,
+    saveUninitialized:false,
     store: store,
     cookie: { sameSite:'none', secure: true}
     /*cookie : { 
@@ -63,6 +64,19 @@ app.get("/cookie",(req,res)=>{
     
     res.cookie('session',sessionId, {maxAge:oneDay,domain: process.env.cookiedomain, sameSite:'none', secure: true, partitioned: true })
     res.json({messsage : 'Success'})
+
+})
+
+
+app.get("/userauth_test1",IsAuth.user, (req,res) => {
+
+    console.log("Called userAuth")
+    res.status(200).json({message:"You have made it, you seem to be a registered user.", })
+
+})
+app.get("/adminauth_test1", IsAuth.admin,(req,res) => {
+
+    res.status(200).json({message:"You have made it, you seem to be a registered admin."})
 
 })
 

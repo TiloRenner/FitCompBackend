@@ -92,7 +92,7 @@ const AuthenticationController = {
                 }
                 else
                 {
-                    res.status(404).json({userLoggedIn:false, message:"user does not exist or password incorrect"}.redirect('/login'))
+                    res.status(401).json({userLoggedIn:false, message:"user does not exist or password incorrect"})
                 }
             }
 
