@@ -55,7 +55,7 @@ app.use(cors({origin: true, methods:["POST", "GET","OPTIONS","HEAD"],credentials
 
 app.use("/authentication", AuthenticationRouter);
 app.use("/assessment",AssessmentRouter);
-app.use("/user",IsAuth.user,UserRouter)
+app.use("/user",IsAuth.allRoles,UserRouter)
 
 app.get("/cookie",(req,res)=>{
 
@@ -72,7 +72,7 @@ app.get("/cookie",(req,res)=>{
 
 
 
-app.get("/userauth_test1",IsAuth.user, (req,res) => {
+app.get("/userauth_test1",IsAuth.allRoles, (req,res) => {
 
     console.log("Called userAuth")
     res.status(200).json({message:"You have made it, you seem to be a registered user.", })

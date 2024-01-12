@@ -3,7 +3,7 @@
 
 const IsAuth =
 {
-    user: (req,res,next) =>{
+    allRoles: (req,res,next) =>{
         console.log("Check Session:" , req.session)
         if(req.session.isAuth && (req.session.role == "user" || req.session.role == "admin" ))
         {
@@ -28,7 +28,20 @@ const IsAuth =
         }
 
 
-    }
+    },
+    notLoggedIn: (req,res,next) =>{
+        console.log("Check Session:" , req.session)
+        if(req.session.isAuth)
+        {
+            res.status(401).json({message:"You are already logged in. If you really want to do this please log out."})
+        }
+        else
+        {
+            next();
+        }
+
+
+    },
 
 
 
