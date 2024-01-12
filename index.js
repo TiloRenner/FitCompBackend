@@ -30,14 +30,6 @@ const store = new MongoDBStore({
 const app = express();
 const sessions ={};
 
-/*app.use(sessions({
-    secret: "thisismysecretkey",
-    saveUninitialized:true,
-    cookie: { maxAge: oneDay },
-    resave: false
-    }));*/
-
-
 
 app.set('trust proxy', 1) // trust first proxy
 app.use(express.json());

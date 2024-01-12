@@ -82,12 +82,13 @@ const AuthenticationController = {
                     console.log("Sending Cookie?" ,req.session)
                     req.session.isAuth = true;
                     req.session.userId = matchingUser._id;
+                    req.session.role = matchingUser.role;
                     console.log("Sending Cookie?" ,req.session)
                     console.log("Sending CookieID" ,req.sessionID)
 
                     //res.cookie('sessionPWTest',"MyOwnCookie" + matchingUser._id, {maxAge:oneDay,domain:cookiedomain , sameSite:'none', secure: true, partitioned: true })
                     //res.cookie('fitcomp2.sid',req.session, {maxAge:oneDay,domain:cookiedomain , sameSite:'none', secure: true, partitioned: true })
-                    res.status(200).json({message: "User logged in"})
+                    res.status(200).json({message: "User logged in", role:matchingUser.role})
                 }
                 else
                 {
