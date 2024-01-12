@@ -101,6 +101,24 @@ const AuthenticationController = {
         {
 
         }
+    },
+    logout : (req,res) =>
+    {
+        console.log("logout")
+        console.log("SessionID:" ,req.sessionID)
+        req.session.isAuth= null;
+        req.session.userId= null;
+        req.session.role=null;
+        req.session.destroy()
+        res.clearCookie('fitcomp.sid')
+        res.status(200).json({test:"test"})
+    },
+    status : (req,res) =>
+    {
+        console.log("logout")
+        console.log("SessionID:" ,req.sessionID)
+        const role = req.session.role
+        res.status(200).json({message: "User logged in", role:role})
     }
 } 
 
