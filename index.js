@@ -5,6 +5,7 @@ import fs from 'fs'
 import cors from 'cors'
 import AssessmentRouter from './router/assessmentRouter.js'
 import AuthenticationRouter from './router/authenticationRouter.js';
+import UserRouter from './router/userRouter.js'
 import {v4 as uuidv4} from 'uuid';
 import 'dotenv/config';
 import session from 'express-session'
@@ -54,6 +55,7 @@ app.use(cors({origin: true, methods:["POST", "GET","OPTIONS","HEAD"],credentials
 
 app.use("/authentication", AuthenticationRouter);
 app.use("/assessment",AssessmentRouter);
+app.use("/user",IsAuth.user,UserRouter)
 
 app.get("/cookie",(req,res)=>{
 
@@ -68,6 +70,8 @@ app.get("/cookie",(req,res)=>{
 })
 
 
+
+
 app.get("/userauth_test1",IsAuth.user, (req,res) => {
 
     console.log("Called userAuth")
@@ -79,6 +83,8 @@ app.get("/adminauth_test1", IsAuth.admin,(req,res) => {
     res.status(200).json({message:"You have made it, you seem to be a registered admin."})
 
 })
+
+
 
 
 
