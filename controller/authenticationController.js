@@ -106,6 +106,9 @@ const AuthenticationController = {
     {
         console.log("logout")
         console.log("SessionID:" ,req.sessionID)
+        req.session.isAuth= null;
+        req.session.userId= null;
+        req.session.role=null;
         req.session.destroy()
         res.clearCookie('fitcomp.sid')
         res.status(200).json({test:"test"})
