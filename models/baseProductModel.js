@@ -14,11 +14,7 @@ const baseProductSchema = new mongoose.Schema({
         name:String
     }]
 
-
-
-
 })
 
 
-
-export default mongoose.Model("baseProduct", baseProductSchema);
+export default mongoose.model("baseProduct", baseProductSchema,"baseProducts");

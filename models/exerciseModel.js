@@ -15,4 +15,4 @@ const exerciseSchema = new mongoose.Schema({
 })
 
 
-export default mongoose.Model("exercise")
+export default mongoose.model("exercise", exerciseSchema)

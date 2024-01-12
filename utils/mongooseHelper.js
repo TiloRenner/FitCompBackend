@@ -2,6 +2,7 @@
 
 import 'dotenv/config';
 import mongoose from 'mongoose';
+import baseProduct from '../models/baseProductModel.js'
 
 const MongooseHelper = 
 {
@@ -30,6 +31,20 @@ const MongooseHelper =
     findUser: async function(username)
     {
 
+    },
+
+    findAllProducts: async function()
+    {
+        try{
+            console.log("Start getting products")
+            const products = await baseProduct.find();
+            console.log("Products Inside: ", products)
+            return products
+        }
+        catch(err){
+            console.log("Error getting products",err.message)
+            return null;
+        }
     }
 
 

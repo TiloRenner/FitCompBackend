@@ -1,4 +1,6 @@
-
+import mongoose from 'mongoose'
+import baseProduct from '../models/baseProductModel.js'
+import MongooseHelper from '../utils/mongooseHelper.js'
 
 const AssessmentController =
 {
@@ -87,12 +89,23 @@ const AssessmentController =
     },
 
     serveCategories : async function(req,res){
-        console.log("Called Categories",req.session)
-        const categories = [{id:1, nameGerman:"Abnehmen"},{id:2, nameGerman:"Muskeln aufbauen"},{id:3, nameGerman:"Yoga"},{id:4, nameGerman:"Irgendwas noch"}
-    
-    
-        ]
-    
+        //console.log("Called Categories",req.session)
+        //const categories = [{id:1, nameGerman:"Abnehmen"},{id:2, nameGerman:"Muskeln aufbauen"},{id:3, nameGerman:"Yoga"},{id:4, nameGerman:"Irgendwas noch"}]
+
+        //var id = mongoose.Types.ObjectId.createFromHexString('65a13215c14823e42b435456')
+        //var id = mongoose.mongo.BSONPure.ObjectID.fromHexString('6599134cb4ec8708cde1ddda')
+        //const product = await baseProduct.findById(id)
+        const products = await MongooseHelper.findAllProducts();
+
+        console.log(products)
+
+        if(products)
+        {
+            var categories = products.map((product)=> {
+                console.log(product)
+                return {category_id: product._id, info:product.info};
+            })
+        }
         res.status(200).json(categories)
     },
     serveAdjustedProduct: async function (req,res){
