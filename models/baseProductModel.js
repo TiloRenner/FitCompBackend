@@ -12,13 +12,14 @@ const baseProductSchema = new mongoose.Schema({
     info: [{
         lang:String,
         name:String
-    }]
-
-
-
+    }],
+    category:   {
+        type:String,
+        required:true,
+        unique:true,
+    }   
 
 })
 
 
-
-export default mongoose.Model("baseProduct", baseProductSchema);
+export default mongoose.model("baseProduct", baseProductSchema,"productsBase");

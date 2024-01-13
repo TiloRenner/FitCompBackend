@@ -8,6 +8,7 @@ const exerciseSchema = new mongoose.Schema({
         desc:{type:String, required:true},
         instructionURL:{type:String, required:true},
         instructions:{type:String, required:true},
+        assessmentQ:{type:String, required:true},
 
     }]
 
@@ -15,4 +16,4 @@ const exerciseSchema = new mongoose.Schema({
 })
 
 
-export default mongoose.Model("exercise")
+export default mongoose.model("exercise", exerciseSchema)
