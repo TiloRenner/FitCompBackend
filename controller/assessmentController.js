@@ -36,7 +36,7 @@ const AssessmentController =
                     ]
                 },
                 {
-                    questionTextGerman:"Wieviel Zeit kannst du pro Tag für das Training aufwenden?",
+                    questionTextGerman:"Wieviel Minuten kannst du pro Tag für das Training aufwenden?",
                     questionType:"skill",
                     questionId:101,
                     answerType:"slider",
@@ -103,7 +103,7 @@ const AssessmentController =
         {
             var categories = products.map((product)=> {
                 console.log(product)
-                return {category_id: product._id, info:product.info};
+                return {id: product.category,deprecated:"nameGerman verschwindet bald!!!!",nameGerman:product.info[0].name, product , info:product.info};
             })
         }
         res.status(200).json(categories)
