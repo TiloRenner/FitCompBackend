@@ -103,7 +103,7 @@ const AssessmentController =
         {
             var categories = products.map((product)=> {
                 console.log(product)
-                return {id: product.category,deprecated:"nameGerman verschwindet bald!!!!",nameGerman:product.info[0].name, product , info:product.info};
+                return {id: product.category,deprecated:"nameGerman verschwindet bald!!!!",nameGerman:product.info[0].name , info:product.info};
             })
         }
         res.status(200).json(categories)
