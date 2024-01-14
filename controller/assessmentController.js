@@ -7,6 +7,20 @@ const AssessmentController =
 
     serveAssessmentQuestions: async function (req,res)
     {
+
+        console.log(req.query.category)
+
+        const category = req.query.category
+
+        if(category)
+        {
+            const matchingProduct = await baseProduct.findOne({category:category})
+            console.log("MatchingProduct: ", matchingProduct)
+
+        }
+
+
+
         const questions_package = {
             steps:4,
             questions: [
@@ -89,6 +103,8 @@ const AssessmentController =
     },
 
     serveCategories : async function(req,res){
+
+        console.log(req.query.category)
         //console.log("Called Categories",req.session)
         //const categories = [{id:1, nameGerman:"Abnehmen"},{id:2, nameGerman:"Muskeln aufbauen"},{id:3, nameGerman:"Yoga"},{id:4, nameGerman:"Irgendwas noch"}]
 
