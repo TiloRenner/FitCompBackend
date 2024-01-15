@@ -7,7 +7,113 @@ const AssessmentController =
 
     serveAssessmentQuestions: async function (req,res)
     {
-        const questions_package = {
+
+        console.log(req.query.category)
+
+        const category = req.query.category
+
+        var questions_package = {steps:0,questions : []};
+        
+
+        if(category)
+        {
+            try
+            {
+                const matchingProduct = await MongooseHelper.findProductByCategory(category)
+                console.log("MatchingProduct: ", matchingProduct)
+                if(matchingProduct)
+                {
+                    if(matchingProduct.exercises && matchingProduct.exercises.length > 0)
+                    {
+                        const matchingExercisesAll = await Promise.all (matchingProduct.exercises.map(prodExercise =>
+                            {
+                                return MongooseHelper.findExerciseById(prodExercise.exerciseId)
+                            }))
+                        //console.log("Exercises in Product: " , matchingExercisesAll)
+                        if(matchingExercisesAll && matchingExercisesAll.length == matchingProduct.exercises.length)
+                        {
+                            const exerciseQuestions = matchingProduct.exercises.map((productExercise) =>
+                                {
+                                    const matchingExercise = matchingExercisesAll.find(exercise => {
+                                        return exercise._id.equals(productExercise.exerciseId)})
+                                    //console.log("MatchingExercise:" , matchingExercise, "ProdExer: ", productExercise)
+
+                                        const maxReps = productExercise.levels.reduce((prev,current) =>
+                                        {
+                                            return (prev && prev.reps > current.reps) ? prev : current
+                                        }
+                                        ).reps;
+                                        console.log("Max:" , maxReps)
+
+                                        const defaultReps = Math.floor(maxReps / 2)
+
+                                        const id = matchingExercise._id.toString()
+                                        console.log("QuestionID:" , id)
+
+                                        const textGerman = matchingExercise.info.find((info) =>
+                                        {
+                                            return info.lang =="de"
+                                        })
+
+                                        const answerStrings = matchingExercise.info.map((info) =>
+                                            {
+                                                return {lang:info.lang, text:info.name}
+                                            }
+                                            
+                                        )
+
+                                        console.log("GermanText:" , textGerman)
+                                        
+                                        const question ={
+                                            questionId:id,
+                                            questionType:"skill",
+                                            questionTextGerman:textGerman.assessmentQ,
+                                            questionText:matchingExercise.info,
+                                            answerType:"slider",
+                                            answers:[{
+                                                aTextGerman:textGerman.name,
+                                                answerText:answerStrings,
+                                                valueMin:0,
+                                                valueMax:maxReps,
+                                                valueDefault:defaultReps,
+                                            }]
+                                        }
+
+                                        console.log("Question: " ,question)
+
+                                        return question;
+                                        
+                                }
+                            )
+
+                            questions_package.questions = questions_package.questions.concat(exerciseQuestions)
+
+                        }
+                        else
+                        {
+                            console.error("No Exercises found or Length mismatch to Product")
+                        }
+                    }
+                    else
+                    {
+                        console.error("No Exercises found in Product " , matchingProduct)
+                    }
+
+                }
+                else
+                {
+                    console.error("No Matching Product found for Category: ", category)
+                }
+
+            }
+            catch(err)
+            {
+                console.error("Error: ", err.message)
+            }
+
+        }
+
+        /*questions_package = {
             steps:4,
             questions: [
                 {
@@ -82,13 +188,17 @@ const AssessmentController =
                 {test:0}
     
             ]
-        }
+        }*/
+
+        questions_package.steps = questions_package.questions.length
         
         res.status(200).json(questions_package)
 
     },
 
     serveCategories : async function(req,res){
+
+        console.log(req.query.category)
         //console.log("Called Categories",req.session)
         //const categories = [{id:1, nameGerman:"Abnehmen"},{id:2, nameGerman:"Muskeln aufbauen"},{id:3, nameGerman:"Yoga"},{id:4, nameGerman:"Irgendwas noch"}]
 
@@ -111,8 +221,9 @@ const AssessmentController =
     serveAdjustedProduct: async function (req,res){
         console.log(req.body);
 
+        const {category,answers} = req.body
 
-        const baseproduct = 
+        /*const baseproduct = 
         {
             category : 1,
             exercises: [
@@ -130,15 +241,49 @@ const AssessmentController =
 
 
             ]
-        }
+        }*/
 
-        const adjustedExercises = baseproduct.exercises.map((exercise) =>
+        const baseProduct = await MongooseHelper.findProductByCategory(category)
+        console.log("BaseProduct:", baseProduct)
+
+
+        const matchingExercisesAll = await Promise.all (baseProduct.exercises.map(prodExercise =>
             {
-                const matchingAnswer = req.body.answers.find((answer) => answer.questionId == exercise.questionId
+                return MongooseHelper.findExerciseById(prodExercise.exerciseId)
+            }))
 
-                )
-                exercise.reps = Math.floor(matchingAnswer.valueEntered *1.2)
-                return exercise;
+        const adjustedExercises = baseProduct.exercises.map((exercise) =>
+            {
+                console.log("Exercise:", exercise, "ID:" ,exercise.exerciseId )
+                const matchingAnswer = answers.find((answer) => 
+                {
+                    const questionID = MongooseHelper.returnObjectIdFromHextString(answer.questionId)
+                    console.log("QuestionID:" , questionID, "ExerciseID:" , exercise.exerciseId)
+                    return exercise.exerciseId.equals(questionID);
+
+                })
+                console.log("Match:", matchingAnswer)
+                if(matchingAnswer)
+                {
+                   const info = matchingExercisesAll.find(info => info._id.equals(exercise.exerciseId))
+                    console.log("info: ", info)
+                    console.log("Found matching Exercise for " ,exercise.exerciseId.toString() , " : " , matchingAnswer)
+                    //Build Sets and Repetitions based on Answer
+                    	exercise.reps = Math.floor(matchingAnswer.valueEntered *100)
+                  
+                    
+                    const adjustedExercise ={
+                        exerciseId: exercise.exerciseId.toString(),
+                        info:info.info,
+                        sets:2,
+                        reps:Math.floor(matchingAnswer.valueEntered * 1.1)
+                    }
+                    return adjustedExercise;
+                }
+                else
+                {
+                    console.error("Could not find Matching Exercise for Products Exercise ", exercise.questionId ," in Post Data")
+                }
 
             }
         )
@@ -147,14 +292,14 @@ const AssessmentController =
 
         const adjustedProduct = 
         {
-            category : 1
+            category : category
         }
         adjustedProduct.exercises = adjustedExercises;
 
 
 
         res.status(200).json({
-          message: 'Soon with adjusted product',
+          
           adjustedProduct
         });
     }
