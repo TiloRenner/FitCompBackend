@@ -7,6 +7,7 @@ const IsAuth =
         console.log("Check Session:" , req.session)
         if(req.session.isAuth && (req.session.role == "user" || req.session.role == "admin" ))
         {
+            console.log("ID:", req.sessionID)
             next();
         }
         else
@@ -20,6 +21,7 @@ const IsAuth =
     admin: (req,res,next) => {
         if(req.session.isAuth && req.session.role == "admin")
         {
+            console.log(req.sessionID)
             next();
         }
         else

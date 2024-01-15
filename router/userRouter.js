@@ -8,6 +8,7 @@ const router = express.Router()
 
 
 router.get("/trainingplan", TrainingPlanController.trainingPlan)
+//router.post("/trainingplan", TrainingPlanController.trainingPlan)
 
 
 

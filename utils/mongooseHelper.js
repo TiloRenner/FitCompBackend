@@ -1,10 +1,10 @@
-
-
 import 'dotenv/config';
 import mongoose from 'mongoose';
 import baseProduct from '../models/baseProductModel.js'
+import userProductModel from '../models/userProductModel.js';
 import exercise from '../models/exerciseModel.js';
 import levelName from '../models/levelNameModel.js'
+import userModel from '../models/userModel.js';
 
 const MongooseHelper = 
 {
@@ -90,6 +90,22 @@ const MongooseHelper =
     {
                 const obId = mongoose.Types.ObjectId.createFromHexString(id)
                 return obId;
+    },
+    storeUserProduct: async function (userId, adjProduct)
+    {
+        const user = await userModel.findById(userId);
+        const {username,email,role} = user;
+        console.log("Start Strip Down to Adjusted Product")
+        console.log("StrippedProduct: " ,adjProduct)
+        adjProduct.userId = userId;
+
+        user.currentProduct = adjProduct;
+        await user.save();
+
+        //const newProduct = await userProductModel.create(adjProduct)
+
+
+        
     }
 
 
