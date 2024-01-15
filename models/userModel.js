@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import { userProductSchema } from "./userProductModel.js";
 
 
 
@@ -21,7 +21,8 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true,
         enum: ['admin', 'user'] 
-    }
+    },
+    currentProduct: userProductSchema
 }
 );
 
