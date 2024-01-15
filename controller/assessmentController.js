@@ -283,14 +283,17 @@ const AssessmentController =
                         return Math.abs(targetReps - current.reps) < (targetReps - prev.reps) ? current : prev
                     })
 
+                    const {actualLevel = {level:1}} = exercise.levels.find(level => {return targetReps >= level.reps}) || {}
+
                     console.log("Closest Level:" , closestLevel)
+                    console.log("Actual Level:" , actualLevel)
                     //Find levelName
 
                     console.log(levelNames)
                     const matchingLevelInfo = levelNames.find(levelName =>
                         {
                         console.log("LVLNAME:", levelName)
-                        return levelName.level == closestLevel.level
+                        return levelName.level == actualLevel.level
                         }
                     )
 
