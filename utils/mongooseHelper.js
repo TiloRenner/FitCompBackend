@@ -3,6 +3,7 @@
 import 'dotenv/config';
 import mongoose from 'mongoose';
 import baseProduct from '../models/baseProductModel.js'
+import exercise from '../models/exerciseModel.js';
 
 const MongooseHelper = 
 {
@@ -45,6 +46,31 @@ const MongooseHelper =
             console.log("Error getting products",err.message)
             return null;
         }
+    },
+    findProductByCategory:async function(category)
+    {
+        try{
+            const product = await baseProduct.findOne({category:category});
+            return product;
+        }
+        catch(err)
+        {
+            console.error("Error finding Product: ", err.message)
+        }
+
+    },
+    findExerciseById: async function(id)
+    {
+        try{
+            const matchingExercise = await exercise.findById(id)
+
+            return matchingExercise;
+        }
+        catch(err)
+        {
+            console.error("Error getting Product with ID " , id , " :" , err.message)
+        }
+
     }
 
 

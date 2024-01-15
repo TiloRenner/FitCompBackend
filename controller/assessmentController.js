@@ -12,16 +12,108 @@ const AssessmentController =
 
         const category = req.query.category
 
+        var questions_package = {steps:0,questions : []};
+        
+
         if(category)
         {
-            const matchingProduct = await baseProduct.findOne({category:category})
-            console.log("MatchingProduct: ", matchingProduct)
+            try
+            {
+                const matchingProduct = await MongooseHelper.findProductByCategory(category)
+                console.log("MatchingProduct: ", matchingProduct)
+                if(matchingProduct)
+                {
+                    if(matchingProduct.exercises && matchingProduct.exercises.length > 0)
+                    {
+                        const matchingExercisesAll = await Promise.all (matchingProduct.exercises.map(prodExercise =>
+                            {
+                                return MongooseHelper.findExerciseById(prodExercise.exerciseId)
+                            }))
+                        //console.log("Exercises in Product: " , matchingExercisesAll)
+                        if(matchingExercisesAll && matchingExercisesAll.length == matchingProduct.exercises.length)
+                        {
+                            const exerciseQuestions = matchingProduct.exercises.map((productExercise) =>
+                                {
+                                    const matchingExercise = matchingExercisesAll.find(exercise => {
+                                        return exercise._id.equals(productExercise.exerciseId)})
+                                    //console.log("MatchingExercise:" , matchingExercise, "ProdExer: ", productExercise)
+
+                                        const maxReps = productExercise.levels.reduce((prev,current) =>
+                                        {
+                                            return (prev && prev.reps > current.reps) ? prev : current
+                                        }
+                                        ).reps;
+                                        console.log("Max:" , maxReps)
+
+                                        const defaultReps = Math.floor(maxReps / 2)
+
+                                        const id = matchingExercise._id.toString()
+                                        console.log("QuestionID:" , id)
+
+                                        const textGerman = matchingExercise.info.find((info) =>
+                                        {
+                                            return info.lang =="de"
+                                        })
+
+                                        const answerStrings = matchingExercise.info.map((info) =>
+                                            {
+                                                return {lang:info.lang, text:info.name}
+                                            }
+                                            
+                                        )
+
+                                        console.log("GermanText:" , textGerman)
+                                        
+                                        const question ={
+                                            questionId:id,
+                                            questionType:"skill",
+                                            questionTextGerman:textGerman.assessmentQ,
+                                            questionText:matchingExercise.info,
+                                            answerType:"slider",
+                                            answers:[{
+                                                aTextGerman:textGerman.name,
+                                                answerText:answerStrings,
+                                                valueMin:0,
+                                                valueMax:maxReps,
+                                                valueDefault:defaultReps,
+                                            }]
+                                        }
+
+                                        console.log("Question: " ,question)
+
+                                        return question;
+                                        
+                                }
+                            )
+
+                            questions_package.questions = questions_package.questions.concat(exerciseQuestions)
+
+                        }
+                        else
+                        {
+                            console.error("No Exercises found or Length mismatch to Product")
+                        }
+                    }
+                    else
+                    {
+                        console.error("No Exercises found in Product " , matchingProduct)
+                    }
+
+                }
+                else
+                {
+                    console.error("No Matching Product found for Category: ", category)
+                }
+
+            }
+            catch(err)
+            {
+                console.error("Error: ", err.message)
+            }
 
         }
 
-
-
-        const questions_package = {
+        /*questions_package = {
             steps:4,
             questions: [
                 {
@@ -96,7 +188,9 @@ const AssessmentController =
                 {test:0}
     
             ]
-        }
+        }*/
+
+        questions_package.steps = questions_package.questions.length
         
         res.status(200).json(questions_package)
 
