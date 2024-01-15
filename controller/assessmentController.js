@@ -277,27 +277,47 @@ const AssessmentController =
                     
                     const targetReps = Math.ceil(matchingAnswer.valueEntered * increaseFactor)
 
+                    console.log("Closest : ------------------" )
                     const closestLevel = exercise.levels.reduce((prev,current) =>
                     {
-                        console.log("Current" , current ,"Prev" ,  prev)
-                        return Math.abs(targetReps - current.reps) < (targetReps - prev.reps) ? current : prev
+                        //console.log("Current" , current ,"Prev" ,  prev, " Target: " , targetReps , "C:" ,Math.abs(targetReps - current.reps) , "P:", Math.abs(targetReps - prev.reps) )
+                        
+                        const result = Math.abs(targetReps - current.reps) < Math.abs(targetReps - prev.reps) ? current : prev
+                        //console.log("Result:" ,test)
+                        return result;
                     })
+                    
+                    console.log("Closest Level:" , closestLevel)
 
-                    const {actualLevel = {level:1}} = exercise.levels.find(level => {return targetReps >= level.reps}) || {}
+                    console.log("Actual------------------")
+
+                   const actualLevel = exercise.levels.reduce((prev,current) =>
+                    {
+                        console.log("Current: " , current ," Prev: " ,  prev, " Target: " , targetReps)
+                        const result = (targetReps > current.reps) ? current : prev
+                        console.log("Result:" , result)
+                        return result;
+                    },{level:1 , sets: 0 ,reps: 0 }) //|| { level:1 }
+                    /*const actualLevel = exercise.levels.find(level => {
+                        const result =  targetReps >= level.reps
+                        console.log("Find Result:" , result, "Target:", targetReps , "Level: ",level)
+                    
+                        return result;
+                    }) || { level:1 }*/
 
                     console.log("Closest Level:" , closestLevel)
-                    console.log("Actual Level:" , actualLevel)
+                    console.log("Actual Level:" , actualLevel, "target: " , targetReps)
                     //Find levelName
 
-                    console.log(levelNames)
+                    //console.log(levelNames)
                     const matchingLevelInfo = levelNames.find(levelName =>
                         {
-                        console.log("LVLNAME:", levelName)
+                        //console.log("LVLNAME:", levelName)
                         return levelName.level == actualLevel.level
                         }
                     )
 
-                    console.log("LevelInfo: " , matchingLevelInfo)
+                    //console.log("LevelInfo: " , matchingLevelInfo)
                     
 
                   
