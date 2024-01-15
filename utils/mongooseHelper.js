@@ -71,6 +71,11 @@ const MongooseHelper =
             console.error("Error getting Product with ID " , id , " :" , err.message)
         }
 
+    },
+    returnObjectIdFromHextString : function(id)
+    {
+                const obId = mongoose.Types.ObjectId.createFromHexString(id)
+                return obId;
     }
 
 

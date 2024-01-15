@@ -221,8 +221,9 @@ const AssessmentController =
     serveAdjustedProduct: async function (req,res){
         console.log(req.body);
 
+        const {category,answers} = req.body
 
-        const baseproduct = 
+        /*const baseproduct = 
         {
             category : 1,
             exercises: [
@@ -240,15 +241,49 @@ const AssessmentController =
 
 
             ]
-        }
+        }*/
 
-        const adjustedExercises = baseproduct.exercises.map((exercise) =>
+        const baseProduct = await MongooseHelper.findProductByCategory(category)
+        console.log("BaseProduct:", baseProduct)
+
+
+        const matchingExercisesAll = await Promise.all (baseProduct.exercises.map(prodExercise =>
             {
-                const matchingAnswer = req.body.answers.find((answer) => answer.questionId == exercise.questionId
+                return MongooseHelper.findExerciseById(prodExercise.exerciseId)
+            }))
 
-                )
-                exercise.reps = Math.floor(matchingAnswer.valueEntered *1.2)
-                return exercise;
+        const adjustedExercises = baseProduct.exercises.map((exercise) =>
+            {
+                console.log("Exercise:", exercise, "ID:" ,exercise.exerciseId )
+                const matchingAnswer = answers.find((answer) => 
+                {
+                    const questionID = MongooseHelper.returnObjectIdFromHextString(answer.questionId)
+                    console.log("QuestionID:" , questionID, "ExerciseID:" , exercise.exerciseId)
+                    return exercise.exerciseId.equals(questionID);
+
+                })
+                console.log("Match:", matchingAnswer)
+                if(matchingAnswer)
+                {
+                   const info = matchingExercisesAll.find(info => info._id.equals(exercise.exerciseId))
+                    console.log("info: ", info)
+                    console.log("Found matching Exercise for " ,exercise.exerciseId.toString() , " : " , matchingAnswer)
+                    //Build Sets and Repetitions based on Answer
+                    	exercise.reps = Math.floor(matchingAnswer.valueEntered *100)
+                  
+                    
+                    const adjustedExercise ={
+                        exerciseId: exercise.exerciseId.toString(),
+                        info:info.info,
+                        sets:2,
+                        reps:Math.floor(matchingAnswer.valueEntered * 1.1)
+                    }
+                    return adjustedExercise;
+                }
+                else
+                {
+                    console.error("Could not find Matching Exercise for Products Exercise ", exercise.questionId ," in Post Data")
+                }
 
             }
         )
@@ -257,14 +292,14 @@ const AssessmentController =
 
         const adjustedProduct = 
         {
-            category : 1
+            category : category
         }
         adjustedProduct.exercises = adjustedExercises;
 
 
 
         res.status(200).json({
-          message: 'Soon with adjusted product',
+          
           adjustedProduct
         });
     }
