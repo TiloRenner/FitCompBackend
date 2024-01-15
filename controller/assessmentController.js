@@ -219,6 +219,7 @@ const AssessmentController =
         res.status(200).json(categories)
     },
     serveAdjustedProduct: async function (req,res){
+        var increaseFactor = 1.1;
         console.log(req.body);
 
         const {category,answers} = req.body
@@ -246,6 +247,8 @@ const AssessmentController =
         const baseProduct = await MongooseHelper.findProductByCategory(category)
         console.log("BaseProduct:", baseProduct)
 
+        const levelNames = await MongooseHelper.findLevelNames();
+        console.log("LevelNames:" , levelNames)
 
         const matchingExercisesAll = await Promise.all (baseProduct.exercises.map(prodExercise =>
             {
@@ -269,14 +272,40 @@ const AssessmentController =
                     console.log("info: ", info)
                     console.log("Found matching Exercise for " ,exercise.exerciseId.toString() , " : " , matchingAnswer)
                     //Build Sets and Repetitions based on Answer
-                    	exercise.reps = Math.floor(matchingAnswer.valueEntered *100)
+                    //exercise.reps = Math.floor(matchingAnswer.valueEntered *100)
+
+                    
+                    const targetReps = Math.ceil(matchingAnswer.valueEntered * increaseFactor)
+
+                    const closestLevel = exercise.levels.reduce((prev,current) =>
+                    {
+                        console.log("Current" , current ,"Prev" ,  prev)
+                        return Math.abs(targetReps - current.reps) < (targetReps - prev.reps) ? current : prev
+                    })
+
+                    console.log("Closest Level:" , closestLevel)
+                    //Find levelName
+
+                    console.log(levelNames)
+                    const matchingLevelInfo = levelNames.find(levelName =>
+                        {
+                        console.log("LVLNAME:", levelName)
+                        return levelName.level == closestLevel.level
+                        }
+                    )
+
+                    console.log("LevelInfo: " , matchingLevelInfo)
+                    
+
                   
                     
                     const adjustedExercise ={
                         exerciseId: exercise.exerciseId.toString(),
+                        level:closestLevel.level,
+                        sets:closestLevel.sets,
+                        reps:targetReps,
                         info:info.info,
-                        sets:2,
-                        reps:Math.floor(matchingAnswer.valueEntered * 1.1)
+                        levelName: matchingLevelInfo.text
                     }
                     return adjustedExercise;
                 }

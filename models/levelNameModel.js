@@ -10,4 +10,4 @@ const levelNameSchema = new mongoose.Schema(
 })
 
 
-export default mongoose.model("levelName",levelNameSchema)
+export default mongoose.model("levelName",levelNameSchema, "levelNames")

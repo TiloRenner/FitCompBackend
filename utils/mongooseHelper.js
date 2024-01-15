@@ -4,6 +4,7 @@ import 'dotenv/config';
 import mongoose from 'mongoose';
 import baseProduct from '../models/baseProductModel.js'
 import exercise from '../models/exerciseModel.js';
+import levelName from '../models/levelNameModel.js'
 
 const MongooseHelper = 
 {
@@ -68,7 +69,20 @@ const MongooseHelper =
         }
         catch(err)
         {
-            console.error("Error getting Product with ID " , id , " :" , err.message)
+            console.error("Error getting Exercise with ID " , id , " :" , err.message)
+        }
+
+    },
+    findLevelNames: async function()
+    {
+        try{
+            const matchingExercise = await levelName.find()
+
+            return matchingExercise;
+        }
+        catch(err)
+        {
+            console.error("Error getting LevelNames with IDs :" , err.message)
         }
 
     },
