@@ -111,7 +111,7 @@ const AuthenticationController = {
         req.session.role=null;
         req.session.destroy()
         res.clearCookie('fitcomp.sid')
-        res.status(200).json({test:"test"})
+        res.status(200).json({message:"You have been logged out."})
     },
     status : (req,res) =>
     {

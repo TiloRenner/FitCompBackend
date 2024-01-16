@@ -150,73 +150,52 @@ const AssessmentController =
         const levelNames = await MongooseHelper.findLevelNames();
         console.log("LevelNames:" , levelNames)
 
-        const matchingExercisesAll = await Promise.all (baseProduct.exercises.map(prodExercise =>
+
+        var adjustedExercises = null;
+
+        if(baseProduct && levelNames)
         {
-            return MongooseHelper.findExerciseById(prodExercise.exerciseId)
-        }))
-
-        const adjustedExercises = baseProduct.exercises.map((exercise) =>
-        {
-            console.log("Exercise:", exercise, "ID:" ,exercise.exerciseId )
-            const matchingAnswer = answers.find((answer) => 
+            const matchingExercisesAll = await Promise.all (baseProduct.exercises.map(prodExercise =>
             {
-                const questionID = MongooseHelper.returnObjectIdFromHextString(answer.questionId)
-                console.log("QuestionID:" , questionID, "ExerciseID:" , exercise.exerciseId)
-                return exercise.exerciseId.equals(questionID);
-            })
-            console.log("Match:", matchingAnswer)
-            if(matchingAnswer)
+                    return MongooseHelper.findExerciseById(prodExercise.exerciseId)
+            }))
+            if(matchingExercisesAll)
             {
-                const info = matchingExercisesAll.find(info => info._id.equals(exercise.exerciseId))
-                console.log("info: ", info)
-                console.log("Found matching Exercise for " ,exercise.exerciseId.toString() , " : " , matchingAnswer)
-                //Build Sets and Repetitions based on Answer
-                //exercise.reps = Math.floor(matchingAnswer.valueEntered *100)
-                const targetReps = Math.ceil(matchingAnswer.valueEntered * increaseFactor)
-                console.log("Closest : ------------------" )
-                const closestLevel = exercise.levels.reduce((prev,current) =>
+
+            }
+            else{
+
+            }
+        
+                adjustedExercises = baseProduct.exercises.map((exercise) =>
                 {
-                    //console.log("Current" , current ,"Prev" ,  prev, " Target: " , targetReps , "C:" ,Math.abs(targetReps - current.reps) , "P:", Math.abs(targetReps - prev.reps) )  
-                    const result = Math.abs(targetReps - current.reps) < Math.abs(targetReps - prev.reps) ? current : prev
-                    //console.log("Result:" ,test)
-                    return result;
-                })
-                
-                console.log("Closest Level:" , closestLevel)
+                    console.log("Exercise:", exercise, "ID:" ,exercise.exerciseId )
+                    const matchingAnswer = answers.find((answer) => 
+                    {
+                        const questionID = MongooseHelper.returnObjectIdFromHextString(answer.questionId)
+                        console.log("QuestionID:" , questionID, "ExerciseID:" , exercise.exerciseId)
+                        return exercise.exerciseId.equals(questionID);
+                    })
+                    console.log("Match:", matchingAnswer)
+                    if(matchingAnswer)
+                    {
+                        //Adjust Single Exercise
+                        return AdjustSingleExercise(matchingExercisesAll,exercise,matchingAnswer,increaseFactor,levelNames)
 
-                console.log("Actual------------------")
-
-                const actualLevel = exercise.levels.reduce((prev,current) =>
-                {
-                    console.log("Current: " , current ," Prev: " ,  prev, " Target: " , targetReps)
-                    const result = (targetReps > current.reps) ? current : prev
-                    console.log("Result:" , result)
-                    return result;
-                },{level:1 , sets: 0 ,reps: 0 }) //|| { level:1 }
-
-                const matchingLevelInfo = levelNames.find(levelName =>
-                    {//console.log("LVLNAME:", levelName)
-                    return levelName.level == actualLevel.level
                     }
-                )
-                //console.log("LevelInfo: " , matchingLevelInfo)
-                const adjustedExercise ={
-                    exerciseId: exercise.exerciseId.toString(),
-                    level:closestLevel.level,
-                    sets:closestLevel.sets,
-                    reps:targetReps,
-                    info:info.info,
-                    levelName: matchingLevelInfo.text
+                    else
+                    {
+                        console.error("Could not find Matching Exercise for Products Exercise ", exercise.questionId ," in Post Data")
+                    }
+        
                 }
-                return adjustedExercise;
-            }
-            else
-            {
-                console.error("Could not find Matching Exercise for Products Exercise ", exercise.questionId ," in Post Data")
-            }
+                )
+        }
+        else
+        {
+            console.error("Could not find Base Product or LevelNames for Category ", category ," in Post Data")
 
         }
-        )
         const adjustedProduct = 
         {
             category : category,
@@ -252,5 +231,55 @@ const AssessmentController =
     }
 
 }
+
+
+function AdjustSingleExercise(exercisesInfoAll, exercise,answer,increaseFactor,levelNames)
+{
+
+    const info = exercisesInfoAll.find(info => info._id.equals(exercise.exerciseId))
+    console.log("info: ", info)
+    console.log("Found matching Exercise for " ,exercise.exerciseId.toString() , " : " , answer)
+    const targetReps = Math.ceil(answer.valueEntered * increaseFactor)
+    console.log("Closest : ------------------" )
+    const closestLevel = exercise.levels.reduce((prev,current) =>
+    {
+        //console.log("Current" , current ,"Prev" ,  prev, " Target: " , targetReps , "C:" ,Math.abs(targetReps - current.reps) , "P:", Math.abs(targetReps - prev.reps) )  
+        const result = Math.abs(targetReps - current.reps) < Math.abs(targetReps - prev.reps) ? current : prev
+        //console.log("Result:" ,test)
+        return result;
+    })
+    
+    console.log("Closest Level:" , closestLevel)
+
+    console.log("Actual------------------")
+
+    const actualLevel = exercise.levels.reduce((prev,current) =>
+    {
+        console.log("Current: " , current ," Prev: " ,  prev, " Target: " , targetReps)
+        const result = (targetReps > current.reps) ? current : prev
+        console.log("Result:" , result)
+        return result;
+    },{level:1 , sets: 0 ,reps: 0 }) //|| { level:1 }
+
+    const matchingLevelInfo = levelNames.find(levelName =>
+        {//console.log("LVLNAME:", levelName)
+        return levelName.level == actualLevel.level
+        }
+    )
+    //console.log("LevelInfo: " , matchingLevelInfo)
+    const adjustedExercise ={
+        exerciseId: exercise.exerciseId.toString(),
+        level:closestLevel.level,
+        sets:closestLevel.sets,
+        reps:targetReps,
+        info:info.info,
+        levelName: matchingLevelInfo.text
+    }
+    return adjustedExercise;
+}
+
+
+
+
 
 export default AssessmentController;
