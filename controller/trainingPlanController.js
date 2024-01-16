@@ -80,7 +80,7 @@ const TrainingPlanController =
 
 
 
-        res.status(200).json({message:"Neuer Trainingsplan wurde erstellt", userid: userId, plan:productWithInfo,role:role})
+        res.status(200).json({message:"Aktueller Trainingsplan gesendet", userid: userId, plan:productWithInfo,role:role})
     },
     setTrainingPlan : async (req,res) =>
     {
