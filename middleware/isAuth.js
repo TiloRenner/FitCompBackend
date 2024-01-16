@@ -35,6 +35,7 @@ const IsAuth =
         console.log("Check Session:" , req.session)
         if(req.session.isAuth)
         {
+            
             res.status(401).json({message:"You are already logged in. If you really want to do this please log out."})
         }
         else
