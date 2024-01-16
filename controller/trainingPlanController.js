@@ -45,8 +45,6 @@ const TrainingPlanController =
             {
                 const info = exercisesInfoAll.find(info => info._id.equals(exercise.exerciseId))
                 const levelInfo = levelNames.find(levelName => levelName.level == exercise.level)
-
-
                 if(info && levelInfo)
                 {
                     const adjustedExercise ={
@@ -65,15 +63,24 @@ const TrainingPlanController =
             })
         }
 
+        const averageLevel = Math.floor(currentExercisesWithInfo.reduce((prev, {level}) =>
+        {
+            return prev + level
+        },0) / currentExercisesWithInfo.length)
+
+        const averageLevelName = levelNames.find(levelName => levelName.level == averageLevel)
+
         const productWithInfo = {
             category: currentProduct.category,
             info:currentProduct.info,
+            averageLevel: averageLevel,
+            averageLevelName: averageLevelName,
             exercises : currentExercisesWithInfo
         }
 
 
 
-        res.status(200).json({message:"Hallo", userid: userId, plan:productWithInfo,role:role})
+        res.status(200).json({message:"Neuer Trainingsplan wurde erstellt", userid: userId, plan:productWithInfo,role:role})
     },
     setTrainingPlan : async (req,res) =>
     {

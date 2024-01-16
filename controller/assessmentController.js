@@ -196,10 +196,21 @@ const AssessmentController =
             console.error("Could not find Base Product or LevelNames for Category ", category ," in Post Data")
 
         }
+
+
+        const averageLevel = Math.floor(adjustedExercises.reduce((prev, {level}) =>
+        {
+            return prev + level
+        },0) / adjustedExercises.length)
+
+        const averageLevelName = levelNames.find(levelName => levelName.level == averageLevel)
+
         const adjustedProduct = 
         {
             category : category,
-            info:baseProduct.info
+            info:baseProduct.info,
+            averageLevel: averageLevel,
+            averageLevelName: averageLevelName,
         }
         adjustedProduct.exercises = adjustedExercises;
 
