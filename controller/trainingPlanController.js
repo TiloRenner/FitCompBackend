@@ -63,9 +63,18 @@ const TrainingPlanController =
             })
         }
 
+        const averageLevel = currentExercisesWithInfo.reduce((prev, {level}) =>
+        {
+            return prev + level
+        },0) / currentExercisesWithInfo.length
+
+        const averageLevelName = levelNames.find(levelName => levelName.level == averageLevel)
+
         const productWithInfo = {
             category: currentProduct.category,
             info:currentProduct.info,
+            averageLevel: averageLevel,
+            averageLevelName: averageLevelName,
             exercises : currentExercisesWithInfo
         }
 
