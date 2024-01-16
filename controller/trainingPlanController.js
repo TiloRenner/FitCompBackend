@@ -45,8 +45,6 @@ const TrainingPlanController =
             {
                 const info = exercisesInfoAll.find(info => info._id.equals(exercise.exerciseId))
                 const levelInfo = levelNames.find(levelName => levelName.level == exercise.level)
-
-
                 if(info && levelInfo)
                 {
                     const adjustedExercise ={
