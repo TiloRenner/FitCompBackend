@@ -63,10 +63,10 @@ const TrainingPlanController =
             })
         }
 
-        const averageLevel = currentExercisesWithInfo.reduce((prev, {level}) =>
+        const averageLevel = Math.floor(currentExercisesWithInfo.reduce((prev, {level}) =>
         {
             return prev + level
-        },0) / currentExercisesWithInfo.length
+        },0) / currentExercisesWithInfo.length)
 
         const averageLevelName = levelNames.find(levelName => levelName.level == averageLevel)
 
@@ -80,7 +80,7 @@ const TrainingPlanController =
 
 
 
-        res.status(200).json({message:"Hallo", userid: userId, plan:productWithInfo,role:role})
+        res.status(200).json({message:"Neuer Trainingsplan wurde erstellt", userid: userId, plan:productWithInfo,role:role})
     },
     setTrainingPlan : async (req,res) =>
     {
