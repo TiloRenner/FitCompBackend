@@ -113,12 +113,18 @@ const AuthenticationController = {
         res.clearCookie('fitcomp.sid')
         res.status(200).json({message:"You have been logged out."})
     },
-    status : (req,res) =>
+    status : async (req,res) =>
     {
         console.log("logout")
         console.log("SessionID:" ,req.sessionID)
         const role = req.session.role
-        res.status(200).json({message: "User logged in", role:role})
+
+        const userId = req.session.userId
+
+        const user = await User.findById(userId);
+        const {username,email} = user;
+
+        res.status(200).json({message: "User logged in", role:role , username:username})
     }
 } 
 

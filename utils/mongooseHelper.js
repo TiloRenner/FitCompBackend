@@ -5,6 +5,7 @@ import userProductModel from '../models/userProductModel.js';
 import exercise from '../models/exerciseModel.js';
 import levelName from '../models/levelNameModel.js'
 import userModel from '../models/userModel.js';
+import completedTraining from '../models/completedTraining.js';
 
 const MongooseHelper = 
 {
@@ -106,6 +107,19 @@ const MongooseHelper =
 
 
         
+    },
+    getCompletedTrainingsForUserId: async function (userId)
+    {
+        //const completedTrainings
+
+    },
+    createCompletedTraining: async function(userId, completedExercises)
+    {
+        const newCompletedTraining = await completedTraining.create({
+            userId:userId,
+            completedExercises:completedExercises
+        })
+
     }
 
 
