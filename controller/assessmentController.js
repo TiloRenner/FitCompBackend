@@ -150,7 +150,6 @@ const AssessmentController =
         const levelNames = await MongooseHelper.findLevelNames();
         console.log("LevelNames:" , levelNames)
 
-
         var adjustedExercises = null;
 
         if(baseProduct && levelNames)
@@ -166,7 +165,6 @@ const AssessmentController =
             else{
 
             }
-        
                 adjustedExercises = baseProduct.exercises.map((exercise) =>
                 {
                     console.log("Exercise:", exercise, "ID:" ,exercise.exerciseId )
@@ -181,23 +179,18 @@ const AssessmentController =
                     {
                         //Adjust Single Exercise
                         return AdjustSingleExercise(matchingExercisesAll,exercise,matchingAnswer,increaseFactor,levelNames)
-
                     }
                     else
                     {
                         console.error("Could not find Matching Exercise for Products Exercise ", exercise.questionId ," in Post Data")
                     }
-        
                 }
                 )
         }
         else
         {
             console.error("Could not find Base Product or LevelNames for Category ", category ," in Post Data")
-
         }
-
-
         const averageLevel = Math.floor(adjustedExercises.reduce((prev, {level}) =>
         {
             return prev + level
@@ -250,7 +243,9 @@ function AdjustSingleExercise(exercisesInfoAll, exercise,answer,increaseFactor,l
     const info = exercisesInfoAll.find(info => info._id.equals(exercise.exerciseId))
     console.log("info: ", info)
     console.log("Found matching Exercise for " ,exercise.exerciseId.toString() , " : " , answer)
-    const targetReps = Math.ceil(answer.valueEntered * increaseFactor)
+    var targetReps = Math.ceil(answer.valueEntered * increaseFactor)
+    if(targetReps <1 )
+    {targetReps = 1}
     console.log("Closest : ------------------" )
     const closestLevel = exercise.levels.reduce((prev,current) =>
     {
