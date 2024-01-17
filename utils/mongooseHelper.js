@@ -120,6 +120,13 @@ const MongooseHelper =
             completedExercises:completedExercises
         })
 
+    },
+    getAllCompletedTrainingsForUserId: async function(userId)
+    {
+        console.log("Try to find all Trainings for", userId)
+        const completedTrainings = await completedTraining.find({userId:userId}).exec()
+        console.log(completedTrainings)
+
     }
 
 
