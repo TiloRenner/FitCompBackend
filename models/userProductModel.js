@@ -24,7 +24,7 @@ const userProductSchema = new mongoose.Schema({
         unique:true,
     }   
 
-})
+},{timestamps:true})
 
 const userProductModel = mongoose.model("userProduct", userProductSchema,"userProducts");
 export {userProductModel as default , userProductSchema as userProductSchema} ;

@@ -27,60 +27,63 @@ const TrainingPlanController =
         {
             res.status(204).json({message:"No Current Product", plan:null})
         }
-
-        const currentExercises = user.currentProduct.exercises;
-        var currentExercisesWithInfo = null
-
-        const levelNames = await MongooseHelper.findLevelNames();
-        console.log("LevelNames:" , levelNames)
-
-        const exercisesInfoAll = await Promise.all (currentExercises.map(prodExercise =>
-            {
-                    return MongooseHelper.findExerciseById(prodExercise.exerciseId)
-            }))
-
-        if(exercisesInfoAll && levelNames)
-        {
-            currentExercisesWithInfo = currentExercises.map((exercise) =>
-            {
-                const info = exercisesInfoAll.find(info => info._id.equals(exercise.exerciseId))
-                const levelInfo = levelNames.find(levelName => levelName.level == exercise.level)
-                if(info && levelInfo)
+        else{
+            const currentExercises = user.currentProduct.exercises;
+            var currentExercisesWithInfo = null
+    
+            const levelNames = await MongooseHelper.findLevelNames();
+            console.log("LevelNames:" , levelNames)
+    
+            const exercisesInfoAll = await Promise.all (currentExercises.map(prodExercise =>
                 {
-                    const adjustedExercise ={
-                        exerciseId: exercise.exerciseId.toString(),
-                        level:exercise.level,
-                        sets:exercise.sets,
-                        reps:exercise.reps,
-                        info:info.info,
-                        levelName: levelInfo
+                        return MongooseHelper.findExerciseById(prodExercise.exerciseId)
+                }))
+    
+            if(exercisesInfoAll && levelNames)
+            {
+                currentExercisesWithInfo = currentExercises.map((exercise) =>
+                {
+                    const info = exercisesInfoAll.find(info => info._id.equals(exercise.exerciseId))
+                    const levelInfo = levelNames.find(levelName => levelName.level == exercise.level)
+                    if(info && levelInfo)
+                    {
+                        const adjustedExercise ={
+                            exerciseId: exercise.exerciseId.toString(),
+                            level:exercise.level,
+                            sets:exercise.sets,
+                            reps:exercise.reps,
+                            info:info.info,
+                            levelName: levelInfo
+                        }
+                        return adjustedExercise
                     }
-                    return adjustedExercise
-                }
-                else{
-                    return exercise;
-                }
-            })
+                    else{
+                        return exercise;
+                    }
+                })
+            }
+    
+            const averageLevel = Math.floor(currentExercisesWithInfo.reduce((prev, {level}) =>
+            {
+                return prev + level
+            },0) / currentExercisesWithInfo.length)
+    
+            const averageLevelName = levelNames.find(levelName => levelName.level == averageLevel)
+    
+            const productWithInfo = {
+                category: currentProduct.category,
+                info:currentProduct.info,
+                averageLevel: averageLevel,
+                averageLevelName: averageLevelName,
+                exercises : currentExercisesWithInfo
+            }
+    
+    
+    
+            res.status(200).json({message:"Aktueller Trainingsplan gesendet", username: username, plan:productWithInfo,role:role})
         }
 
-        const averageLevel = Math.floor(currentExercisesWithInfo.reduce((prev, {level}) =>
-        {
-            return prev + level
-        },0) / currentExercisesWithInfo.length)
 
-        const averageLevelName = levelNames.find(levelName => levelName.level == averageLevel)
-
-        const productWithInfo = {
-            category: currentProduct.category,
-            info:currentProduct.info,
-            averageLevel: averageLevel,
-            averageLevelName: averageLevelName,
-            exercises : currentExercisesWithInfo
-        }
-
-
-
-        res.status(200).json({message:"Aktueller Trainingsplan gesendet", username: username, plan:productWithInfo,role:role})
     },
     setTrainingPlan : async (req,res) =>
     {
