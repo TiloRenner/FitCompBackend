@@ -26,8 +26,8 @@ const DashboardController = {
 
         const completedTrainings = await MongooseHelper.getAllCompletedTrainingsForUserId(userId)
         /*const test = await exerciseModel.aggregate([
-            {$match:{userId:userId}}
-            ,{group:{_id:null, repsFull}}])
+            {$match:{userId:{userId}}}
+            ,{$group:{_id:null, repsFull:{$sum:"repsFull"}}}])
        console.log("Overall Repetitions" ,test)*/
 
         if(completedTrainings)
@@ -57,15 +57,15 @@ const DashboardController = {
                 currentExercisesWithInfo = await TrainingPlanController.buildExercisesWithInfo(currentExercises,exercisesInfoAll,levelNames)
             }
 
+            const dashboardData = {plan:currentExercisesWithInfo, trainingData:trainingData, trainingsDone:amountTrainings , timeTrained: amountTrainings * 12 }
 
+            res.status(200).json(dashboardData)
 
         }
 
 
 
-        const dashboardData = {plan:currentExercisesWithInfo, trainingData:trainingData, trainingsDone:amountTrainings , timeTrained: amountTrainings * 12 }
 
-        res.status(200).json(dashboardData)
 
     }
 
