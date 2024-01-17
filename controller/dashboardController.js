@@ -1,6 +1,7 @@
 import MongooseHelper from "../utils/mongooseHelper.js";
 import userModel from "../models/userModel.js";
 import TrainingPlanController from "./trainingPlanController.js";
+import exerciseModel from "../models/exerciseModel.js";
 
 const DashboardController = {
     
@@ -16,16 +17,23 @@ const DashboardController = {
 
         var trainingData = null
         var currentExercisesWithInfo = null;
+        var amountTrainings = 0;
+        var amountRepsOverall = 0;
 
         const levelNames = await MongooseHelper.findLevelNames();
         console.log("LevelNames:" , levelNames)
 
 
         const completedTrainings = await MongooseHelper.getAllCompletedTrainingsForUserId(userId)
+        /*const test = await exerciseModel.aggregate([
+            {$match:{userId:userId}}
+            ,{group:{_id:null, repsFull}}])
+       console.log("Overall Repetitions" ,test)*/
 
         if(completedTrainings)
         {
-
+            console.log("TrainingsGesamt" , completedTrainings.length)
+            amountTrainings = completedTrainings.length;
 
         }
         else
@@ -39,8 +47,6 @@ const DashboardController = {
         }
         else{
             const currentExercises = user.currentProduct.exercises;
-
-
             const exercisesInfoAll = await Promise.all (currentExercises.map(prodExercise =>
                 {
                         return MongooseHelper.findExerciseById(prodExercise.exerciseId)
@@ -51,11 +57,13 @@ const DashboardController = {
                 currentExercisesWithInfo = await TrainingPlanController.buildExercisesWithInfo(currentExercises,exercisesInfoAll,levelNames)
             }
 
+
+
         }
 
 
 
-        const dashboardData = {plan:currentExercisesWithInfo, trainingData:trainingData}
+        const dashboardData = {plan:currentExercisesWithInfo, trainingData:trainingData, trainingsDone:amountTrainings , timeTrained: amountTrainings * 12 }
 
         res.status(200).json(dashboardData)
 
