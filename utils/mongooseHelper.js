@@ -126,6 +126,7 @@ const MongooseHelper =
         console.log("Try to find all Trainings for", userId)
         const completedTrainings = await completedTraining.find({userId:userId}).exec()
         console.log(completedTrainings)
+        return completedTrainings
 
     }
 
