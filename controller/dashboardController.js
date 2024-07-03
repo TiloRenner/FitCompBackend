@@ -2,6 +2,8 @@ import MongooseHelper from "../utils/mongooseHelper.js";
 import userModel from "../models/userModel.js";
 import TrainingPlanController from "./trainingPlanController.js";
 import exerciseModel from "../models/exerciseModel.js";
+import completedTraining from "../models/completedTraining.js";
+import mongoose from "mongoose";
 
 const DashboardController = {
     
@@ -23,16 +25,18 @@ const DashboardController = {
         const levelNames = await MongooseHelper.findLevelNames();
         console.log("LevelNames:" , levelNames)
 
+        const MongUserId = new mongoose.Types.ObjectId(userId)
+        console.log("RealUID:" , MongUserId)
 
         const completedTrainings = await MongooseHelper.getAllCompletedTrainingsForUserId(userId)
-        /*const test = await exerciseModel.aggregate([
-            {$match:{userId:{userId}}}
-            ,{$group:{_id:null, repsFull:{$sum:"repsFull"}}}])
-       console.log("Overall Repetitions" ,test)*/
+        const test = await completedTraining.aggregate([
+            {$match:{userId: MongUserId}}])
+                
+        console.log("Overall Repetitions" ,test)
 
         if(completedTrainings)
         {
-            console.log("TrainingsGesamt" , completedTrainings.length)
+            console.log("TrainingsGesamt" , completedTrainings.length, " INhalt " , completedTrainings)
             amountTrainings = completedTrainings.length;
 
         }
