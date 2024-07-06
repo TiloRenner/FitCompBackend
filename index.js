@@ -80,7 +80,7 @@ app.get("/userauth_test1",IsAuth.allRoles, (req,res) => {
 })
 app.get("/adminauth_test1", IsAuth.admin,(req,res) => {
 
-    res.status(200).json({message:"You have made it, you seem to be a registered admin."})
+    res.status(200).json({message:"You have made it, you seem to be a registered admin!"})
 
 })
 
