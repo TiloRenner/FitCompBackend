@@ -17,7 +17,7 @@ const AssessmentController =
             try
             {
                 const matchingProduct = await MongooseHelper.findProductByCategory(category)
-                console.log("MatchingProduct: ", matchingProduct)
+                console.log("MatchingProduct : ", matchingProduct)
                 if(matchingProduct)
                 {
                     if(matchingProduct.exercises && matchingProduct.exercises.length > 0)
